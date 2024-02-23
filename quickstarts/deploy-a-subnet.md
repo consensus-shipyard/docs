@@ -146,7 +146,7 @@ ipc-cli wallet pub-key --wallet-type evm --address <PLEASE PUT ADDRESS 3>
 * Join the subnet with each validator
 
 ```
-ipc-cli subnet join --from=<PLEASE PUT ADDRESS 1> --subnet=<PLEASE PUT SUBNET ID> --collateral=10 --public-key=<PLEASE PUT PUBLIC KEY RELATED TO ADDRESS 1>  --initial-balance 1
+ipc-cli subnet join --from=<PLEASE PUT ADDRESS 1> --subnet=<PLEASE PUT SUBNET ID> --collateral=10 --public-key=<PLEASE PUT PUBLIC KEY RELATED TO ADDRESS 1> --initial-balance 1
 ipc-cli subnet join --from=<PLEASE PUT ADDRESS 2> --subnet=<PLEASE PUT SUBNET ID> --collateral=10 --public-key=<PLEASE PUT PUBLIC KEY RELATED TO ADDRESS 2> --initial-balance 1
 ipc-cli subnet join --from=<PLEASE PUT ADDRESS 3> --subnet=<PLEASE PUT SUBNET ID> --collateral=10 --public-key=<PLEASE PUT PUBLIC KEY RELATED TO ADDRESS 3> --initial-balance 1
 ```
@@ -181,9 +181,9 @@ cargo make --makefile infra/fendermint/Makefile.toml \
 Note:
 
 * Use full path to PRIVATE\_KEY\_PATH, don't path with "\~"
-* Do not change values of any port unless you have to
+* Do not change values of any port from the ones provided unless you have to
 
-We'll need the _IPLD Resolver Multiaddress_ for the next nodes we'll start.
+You'll need the final component of the `IPLD Resolver Multiaddress` (the `peer ID`) and the `CometBFT node ID` for the next nodes we'll start.
 
 Let's start the second validator:
 
@@ -196,8 +196,8 @@ cargo make --makefile infra/fendermint/Makefile.toml \
     -e CMT_RPC_HOST_PORT=26757 \
     -e ETHAPI_HOST_PORT=8645 \
     -e RESOLVER_HOST_PORT=26755 \
-    -e BOOTSTRAPS=092a95385ccc6fcebe1fad0e77ee8105ef6bf965@validator-1-cometbft:26656 \
-    -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/16Uiu2HAmGa3jAm2yPrCGbi3Y95B9b1Mv6KAx7f7VjXT6Srem2bjC \
+    -e BOOTSTRAPS=<PLEASE PUT COMETBFT NODE ID of VALIDATOR-1>@validator-1-cometbft:26656 \
+    -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/<PLEASE PUT PEER_ID of VALIDATOR-1> \
     -e PARENT_GATEWAY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq -r '.gateway_addr'` \
     -e PARENT_REGISTRY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq -r '.registry_addr'` \
     child-validator
@@ -206,7 +206,6 @@ cargo make --makefile infra/fendermint/Makefile.toml \
 Notes:
 
 * Do not change values of any port from the ones provided unless you have to
-* Do not change values of BOOTSTRAPS and RESOLVER\_BOOTSTRAPS from the ones provided
 
 And the third:
 
@@ -219,8 +218,8 @@ cargo make --makefile infra/fendermint/Makefile.toml \
     -e CMT_RPC_HOST_PORT=26857 \
     -e ETHAPI_HOST_PORT=8745 \
     -e RESOLVER_HOST_PORT=26855 \
-    -e BOOTSTRAPS=092a95385ccc6fcebe1fad0e77ee8105ef6bf965@validator-1-cometbft:26656 \
-    -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/16Uiu2HAmGa3jAm2yPrCGbi3Y95B9b1Mv6KAx7f7VjXT6Srem2bjC \
+    -e BOOTSTRAPS=<PLEASE PUT COMETBFT NODE ID of VALIDATOR-1>@validator-1-cometbft:26656 \
+    -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/<PLEASE PUT PEER_ID of VALIDATOR-1> \
     -e PARENT_GATEWAY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq -r '.gateway_addr'` \
     -e PARENT_REGISTRY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq -r '.registry_addr'` \
     child-validator
@@ -229,64 +228,38 @@ cargo make --makefile infra/fendermint/Makefile.toml \
 Notes:
 
 * Do not change values of any port from the ones provided unless you have to
-* Do not change values of BOOTSTRAPS and RESOLVER\_BOOTSTRAPS from the ones provided
 
 ### Step 7: Interact with your subnet using the IPC CLI
 
-You can try to fetch the balances of your wallets through the following command. The result should show the initial balance that you have included for your validators address in genesis:
+* Make sure `~/.ipc/config.toml` contains the configuration of your subnet in the "Subnet template" section. Uncomment the section and populate the corresponding fields
 
 ```
-ipc-cli wallet balances --wallet-type evm --subnet=<SUBNET_ID>
-```
-
-> The ETH addresses for `gateway_addr` and `registry_addr` used when they are deployed in genesis in a child subnet by Fendermint are `0x77aa40b105843728088c0132e43fc44348881da8` and `0x74539671a1d2f1c8f200826baba665179f53a1b7`, respectively.
-
-### Step 8 (optional): Run a relayer
-
-IPC relies on the role of a specific type of peer on the network called the relayers that are responsible for submitting bottom-up checkpoints that have been finalized in a child subnet to its parent. This process is key for the commitment of child subnet checkpoints in the parent, and the execution of bottom-up cross-net messages. Without relayers, cross-net messages will only flow from top levels of the hierarchy to the bottom, but not the other way around.
-
-* Make sure `~/.ipc/config.toml` contains the configuration of your subnet in "Subnet template" section.
-
-```
-keystore_path = "~/.ipc"
-
-# Filecoin Calibration
-[[subnets]]
-id = "/r314159"
-
-[subnets.config]
-network_type = "fevm"
-provider_http = "https://api.calibration.node.glif.io/rpc/v1"
-gateway_addr = "0x5cF14D2Af9BBd5456Ea532639f1DB355B9BaCBf8"
-registry_addr = "0x7308C4A503a12521215718cbCa98F951E9aAB9B5"
-
 # Subnet template - uncomment and adjust before using
 [[subnets]]
 id = <PUT YOUR SUBNET ID>
 
 [subnets.config]
 network_type = "fevm"
-provider_http = "https://<RPC_ADDR>/"
+provider_http = "http://localhost:8545/"
 gateway_addr = "0x77aa40b105843728088c0132e43fc44348881da8"
 registry_addr = "0x74539671a1d2f1c8f200826baba665179f53a1b7"
 ```
 
-Note: the `gateway_addr` and `registry_addr` in the subnet section should be exactly the same as above. Fendermint always uses sets up the same addresses.
+> 💡 The ETH addresses for `gateway_addr` and `registry_addr` used when they are deployed in genesis in a child subnet by Fendermint are `0x77aa40b105843728088c0132e43fc44348881da8` and `0x74539671a1d2f1c8f200826baba665179f53a1b7`, respectively, so no need to change them.
 
-* Run the relayer process for your subnet using your default address by calling:
+* Fetch the balances of your wallets using  the following command. The result should show the initial balance that you have included for your validators address in genesis:
 
 ```
-ipc-cli checkpoint relayer --subnet <SUBNET_ID>
+ipc-cli wallet balances --wallet-type evm --subnet=<SUBNET_ID>
 ```
 
-* In order to run the relayer from a different address you can use the `--submitted` flag:
+### Step 8: Run a relayer
+
+IPC relies on the role of a specific type of peer on the network called the relayers that are responsible for submitting bottom-up checkpoints that have been finalized in a child subnet to its parent. This process is key for the commitment of child subnet checkpoints in the parent, and the execution of bottom-up cross-net messages. Without relayers, cross-net messages will only flow from top levels of the hierarchy to the bottom, but not the other way around.
+
+
+* Run the relayer process passing the 0x address of the submitter account:
 
 ```
 ipc-cli checkpoint relayer --subnet <SUBNET_ID> --submitter <RELAYER_ADDR>
-```
-
-Relayers are rewarded through cross-net messages fees for the timely submission of bottom-up checkpoints to the parent. In order to claim the checkpointing rewards collected for a subnet, the following command need to be run from the relayer address:
-
-```
-ipc-cli subnet claim --subnet=<SUBNET_ID> --reward
 ```
