@@ -172,8 +172,8 @@ cargo make --makefile infra/fendermint/Makefile.toml \
     -e CMT_RPC_HOST_PORT=26657 \
     -e ETHAPI_HOST_PORT=8545 \
     -e RESOLVER_HOST_PORT=26655 \
-    -e PARENT_GATEWAY=<PLEASE PUT GATEWAY_ADDR> \
-    -e PARENT_REGISTRY=<PLEASE PUT REGISTRY_ADD> \
+    -e PARENT_GATEWAY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.gateway_addr'` \
+    -e PARENT_REGISTRY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.registry_addr'` \
     -e FM_PULL_SKIP=1 \
     child-validator
 ```
@@ -198,8 +198,8 @@ cargo make --makefile infra/fendermint/Makefile.toml \
     -e RESOLVER_HOST_PORT=26755 \
     -e BOOTSTRAPS=092a95385ccc6fcebe1fad0e77ee8105ef6bf965@validator-1-cometbft:26656 \
     -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/16Uiu2HAmGa3jAm2yPrCGbi3Y95B9b1Mv6KAx7f7VjXT6Srem2bjC \
-    -e PARENT_GATEWAY=<PLEASE PUT GATEWAY_ADDR> \
-    -e PARENT_REGISTRY=<PLEASE PUT REGISTRY_ADD> \
+    -e PARENT_GATEWAY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.gateway_addr'` \
+    -e PARENT_REGISTRY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.registry_addr'` \
     child-validator
 ```
 
@@ -221,8 +221,8 @@ cargo make --makefile infra/fendermint/Makefile.toml \
     -e RESOLVER_HOST_PORT=26855 \
     -e BOOTSTRAPS=092a95385ccc6fcebe1fad0e77ee8105ef6bf965@validator-1-cometbft:26656 \
     -e RESOLVER_BOOTSTRAPS=/dns/validator-1-fendermint/tcp/26655/p2p/16Uiu2HAmGa3jAm2yPrCGbi3Y95B9b1Mv6KAx7f7VjXT6Srem2bjC \
-    -e PARENT_GATEWAY=<PLEASE PUT GATEWAY_ADDR> \
-    -e PARENT_REGISTRY=<PLEASE PUT REGISTRY_ADD> \
+    -e PARENT_GATEWAY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.gateway_addr'` \
+    -e PARENT_REGISTRY=`curl -s https://raw.githubusercontent.com/consensus-shipyard/ipc/cd/contracts/deployments/r314159.json | jq '.registry_addr'` \
     child-validator
 ```
 
