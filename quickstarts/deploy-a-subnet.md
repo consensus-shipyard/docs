@@ -161,7 +161,7 @@ TIP: If you'd like to import an EVM account into Metamask, you can use export th
 * The next step is to create a subnet under `/r314159` in calibration. Remember to set a default wallet or explicitly specifying the wallet from which you want to perform the action with the `--from` flag.
 
 ```
-ipc-cli subnet create --parent /r314159 --min-validator-stake 1 --min-validators 4 --bottomup-check-period 30 --from <PLEASE PUT ACCOUNT ADDRESS> --permission-mode collateral --supply-source-kind native
+ipc-cli subnet create --parent /r314159 --min-validator-stake 1 --min-validators 4 --bottomup-check-period 300 --from <PLEASE PUT ACCOUNT ADDRESS> --permission-mode collateral --supply-source-kind native
 ```
 
 This will output your subnet ID, which you will use below.&#x20;
