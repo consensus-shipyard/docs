@@ -4,7 +4,7 @@ description: Architectural components in the IPC framework.
 
 # Architecture
 
-<figure><img src="../.gitbook/assets/image.png" alt=""><figcaption><p>IPC Architecture</p></figcaption></figure>
+<figure><img src="../assets/architecture.png" alt=""><figcaption><p>IPC Architecture</p></figcaption></figure>
 
 ## Validator nodes
 
